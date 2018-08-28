@@ -1,6 +1,19 @@
 # Qinka Computing Subprogram
 
-Qinka Computing Subprogram
+Qinka Computing Subprogram is collection of functions used to do computing.
+
+The code is hosted prime at [Visual Studio Team Services](https://visualstudio.microsoft.com/team-services/)'s
+[repo](https://qinka.visualstudio.com/QinkaComputingSubprogram),
+while the GitHub's [repo](https://github.com/Qinka/QinkaComputingSubprogram) is also available.
+
+## Build Status
+
+| Host      | Platform |                                                                                                                                                                                                                          |
+|-----------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VSTS CI   | Windows  | [![Build status](https://qinka.visualstudio.com/QinkaComputingSubprogram/_apis/build/status/QinkaComputingSubprogram-CI(Windows))](https://qinka.visualstudio.com/QinkaComputingSubprogram/_build/latest?definitionId=1) |
+| VSTS CI   | Linux    | [![Build status](https://qinka.visualstudio.com/QinkaComputingSubprogram/_apis/build/status/QinkaComputingSubprogram-CI(Linux))](https://qinka.visualstudio.com/QinkaComputingSubprogram/_build/latest?definitionId=4)   |
+| VSTS CI   | macOS    | [![Build status](https://qinka.visualstudio.com/QinkaComputingSubprogram/_apis/build/status/QinkaComputingSubprogram-CI(macOS))](https://qinka.visualstudio.com/QinkaComputingSubprogram/_build/latest?definitionId=3)   |
+| Travis-CI | Linux    | [![Build Status](https://travis-ci.org/Qinka/QinkaComputingSubprogram.svg?branch=master)](https://travis-ci.org/Qinka/QinkaComputingSubprogram)                                                                          |
 
 ## Functions
 The Qinka Computing Subprogram includes the following functions:
