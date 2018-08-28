@@ -24,8 +24,8 @@ addons:
 
 env:
   - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t
+  - TASK=qinkacs CC=clang CXX=clang++ RUN_TEST=t
   - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t ACC_BACKEND=OpenMP
-  - TASK=qinkacs CC=clang CXX=clang++ RUN_TEST=t ACC_BACKEND=OpenMP
 
 before_install: |
   source $TRAVIS_BUILD_DIR/.ci/travis_ci_script.sh
