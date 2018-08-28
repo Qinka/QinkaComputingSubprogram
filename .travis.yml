@@ -1,0 +1,74 @@
+# Copyright (C) 2018 Johann Lee <me@qinka.pro>
+#
+
+## Traivs-Ci configure
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    update: true
+    sources:
+      - hvr-ghc
+      - ubuntu-toolchain-r-test
+    packages:
+      - wget
+      - curl
+      - libgtest-dev
+      - cmake
+      - gcc
+      - g++
+      - clang
+      - make
+
+env:
+  - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t
+  - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t ACC_BACKEND=OpenMP
+  - TASK=qinkacs CC=clang CXX=clang++ RUN_TEST=t ACC_BACKEND=OpenMP
+
+before_install: |
+  source $TRAVIS_BUILD_DIR/.ci/travis_ci_script.sh
+  echo init
+  common_init
+  case $TASK in
+    qinkacs)
+      qinkacs_init
+    ;;
+    hQinkaCS)
+      hQinkaCS_init
+    ;;
+    *)
+      echo $TASK nothing to do
+    ;;
+  esac
+
+script: |
+  echo Build and test
+  case $TASK in
+    qinkacs)
+      qinkacs_build
+      qinkacs_test
+    ;;
+    hQinkaCS)
+      hQinkaCS_build
+      hQinkaCS_test
+    ;;
+    *)
+      echo $TASK nothing to do
+    ;;
+  esac
+after_success: |
+  echo after success
+  case $TASK in
+    qinkacs)
+      qinkacs_succ
+    ;;
+    hQinkaCS)
+      hQinkaCS_succ
+    ;;
+    *)
+      echo $TASK nothing to do
+    ;;
+  esac
+
+  
