@@ -1,0 +1,4 @@
+[submodule ".submodules/HaskellFAI"]
+	path = .submodules/HaskellFAI
+	url = https://github.com/Qinka/HaskellFAI.git
+	branch = dev/master
