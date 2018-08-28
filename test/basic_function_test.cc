@@ -427,6 +427,7 @@ TEST(backward_N_dot_div_A, random_case0) {
     float *d = new float[m * n];
 
     fill_random(dC, m * n);
+    fill_random(B,  m * n);
 
     backward_N_dot_div_A(d, B, dC, m * n);
 
@@ -451,6 +452,8 @@ TEST(backward_N_dot_div_B, random_case0) {
     float *A = new float[m * n];
 
     fill_random(dC, m * n);
+    fill_random(A,  m * n);
+    fill_random(B,  m * n);
 
     backward_N_dot_div_B(d, A, B, dC, m * n);
 
@@ -460,6 +463,8 @@ TEST(backward_N_dot_div_B, random_case0) {
 
     delete[] d;
     delete[] dC;
+    delete[] A;
+    delete[] B;
 }
 
 #endif // IGNORE_VECTOR_DIV != 1
