@@ -77,3 +77,6 @@ build
 *.su
 *.idb
 *.pdb
+
+# Haskell
+.stack-work/
