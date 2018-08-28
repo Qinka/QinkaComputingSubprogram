@@ -22,9 +22,12 @@ addons:
       - make
 
 env:
+  # Qinka Computing Subprogram
   - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t
   - TASK=qinkacs CC=clang CXX=clang++ RUN_TEST=t
   - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t ACC_BACKEND=OpenMP
+  # Haskell bindings
+  - TASK=hQinkaCS GHC_VER=8.2.2 THREADED=t LLVM=3.9 DEBUG=t RUN_TEST=t
 
 before_install: |
   source $TRAVIS_BUILD_DIR/.ci/travis_ci_script.sh
