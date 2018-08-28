@@ -20,7 +20,6 @@ addons:
       - g++
       - clang
       - make
-      - libomp-dev
 
 env:
   - TASK=qinkacs CC=gcc   CXX=g++     RUN_TEST=t
