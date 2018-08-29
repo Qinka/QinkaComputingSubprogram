@@ -19,7 +19,7 @@ Description: Qinka Computing Subprogram devel
     Qinka Computing Subprogram devel [TODO]
 
 Package: libqinkacs-runtime
-Section: lib
+Section: libs
 Architecture: any
 Depends:    ${shlibs:Depends},
             ${misc:Depends}
