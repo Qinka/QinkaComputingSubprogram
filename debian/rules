@@ -3,12 +3,15 @@
 %:
 	dh $@  --buildsystem=cmake
 
+CMAKE_CONFIG ?= "-DENABLE_O3=On -DENABLE_OPENMP=On"
+
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf build
 	rm -rf *.build
 
 override_dh_auto_configure:
-	dh_auto_configure -- "-DENABLE_O3=On -DENABLE_OPENMP=On"
+	echo $(PATH)
+	dh_auto_configure -- $(CMAKE_CONFIG)
 
 .PHONY: override_dh_auto_clean override_dh_auto_configure
