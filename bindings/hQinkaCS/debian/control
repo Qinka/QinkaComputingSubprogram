@@ -1,0 +1,72 @@
+Source: haskell-hqinkacs
+Maintainer: Johann Lee <me@qinka.pro>
+Uploaders: Johann Lee <me@qinka.pro>
+Priority: extra
+Section: haskell
+Build-Depends: debhelper (>= 9),
+ haskell-devscripts-minimal | haskell-devscripts (>= 0.8),
+ cdbs,
+ ghc,
+ ghc-prof,
+ libghc-fai-dev,
+ libghc-fai-prof,
+ libghc-juicypixels-dev,
+ libghc-juicypixels-prof,
+ libghc-hqinkacs-binding-dev,
+ libghc-hqinkacs-binding-prof,
+ libghc-split-dev,
+ libghc-split-prof,
+ libghc-text-dev,
+ libghc-text-prof,
+ libghc-vector-dev,
+ libghc-vector-prof,
+Build-Depends-Indep: ghc-doc,
+ libghc-fai-doc,
+ libghc-juicypixels-doc,
+ libghc-hqinkacs-binding-doc,
+ libghc-split-doc,
+ libghc-text-doc,
+ libghc-vector-doc,
+Standards-Version: 3.9.6
+Homepage: https://github.com/Qinka/HaskellFAI
+X-Description: The Haskell binding of Qinka Computing Subprogram
+
+Package: libghc-hqinkacs-dev
+Architecture: any
+Depends: ${haskell:Depends},
+ ${misc:Depends},
+ ${shlibs:Depends},
+Recommends: ${haskell:Recommends},
+Suggests: ${haskell:Suggests},
+Conflicts: ${haskell:Conflicts},
+Provides: ${haskell:Provides},
+Description: ${haskell:ShortDescription}${haskell:ShortBlurb}
+ ${haskell:LongDescription}
+ .
+ ${haskell:Blurb}
+
+Package: libghc-hqinkacs-prof
+Architecture: any
+Depends: ${haskell:Depends},
+ ${misc:Depends},
+Recommends: ${haskell:Recommends},
+Suggests: ${haskell:Suggests},
+Conflicts: ${haskell:Conflicts},
+Provides: ${haskell:Provides},
+Description: ${haskell:ShortDescription}${haskell:ShortBlurb}
+ ${haskell:LongDescription}
+ .
+ ${haskell:Blurb}
+
+Package: libghc-hqinkacs-doc
+Architecture: all
+Section: doc
+Depends: ${haskell:Depends},
+ ${misc:Depends},
+Recommends: ${haskell:Recommends},
+Suggests: ${haskell:Suggests},
+Conflicts: ${haskell:Conflicts},
+Description: ${haskell:ShortDescription}${haskell:ShortBlurb}
+ ${haskell:LongDescription}
+ .
+ ${haskell:Blurb}
