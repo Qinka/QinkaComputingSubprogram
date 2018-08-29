@@ -7,7 +7,20 @@
 # VS Code
 .vscode
 
-
+# Debian
+# For debian build
+*.dsc
+*.deb
+*.tar.xz
+obj-x86_64-linux-gnu
+*.ddeb
+*.debhelper
+*.tar.gz
+*.buildinfo
+*.changes
+*.tar
+*.upload
+*.build
 
 # For C/C++ and CMake
 ############################################# CMake

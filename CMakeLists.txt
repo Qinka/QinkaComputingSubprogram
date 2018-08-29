@@ -142,13 +142,19 @@ endif()
 file (GLOB QCS_PUB_HEADS "${PROJECT_SOURCE_DIR}/include/qinka_cs/*/*.h")
 variable_watch(QCS_PUB_HEADS)
 
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/qinka_cs/" DESTINATION "include/qinka_cs"
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/qinka_cs/" DESTINATION "include/qinka_cs" COMPONENT dev
         FILES_MATCHING PATTERN "*.h")
 
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(LIB_INS_PATH bin)
+else()
+    set(LIB_INS_PATH lib)
+endif()
+
 install(TARGETS qinka-cs
-    ARCHIVE       DESTINATION "lib"
-    RUNTIME DESTINATION       "bin"
-    LIBRARY       DESTINATION "lib"
+    ARCHIVE       DESTINATION "lib"           COMPONENT dev
+    RUNTIME       DESTINATION ${LIB_INS_PATH} COMPONENT runtime
+    LIBRARY       DESTINATION "lib"           COMPONENT dev
 )
 
 
@@ -173,9 +179,24 @@ endif()
 ## Packaing
 set(CPACK_PACKAGE_NAME "qinka-cs")
 set(CPACK_GENERATOR "TXZ;STGZ;TGZ;TZ;ZIP")  
+set(CPACK_SOURCE_GENERATOR "DEB")  
 set(CPACK_PACKAGE_VENDOR "Johann Lee <me@qinka.pro>")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Johann Lee <me@qinka.pro>")
 set(CPACK_PACKAGE_DESCRIPTION "A set of subprogram of math.")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY, "An example of QCS")
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+# Debian
+SET(CPACK_DEB_COMPONENT_INSTALL ON)
+set(CPACK_DEBIAN_PACKAGE_SOURCE "qinka-cs")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), llibgcc1 (>= 1:3.4.2-12), libstdc++6 (>= 5)")
+set(CPACK_DEBIAN_DEV_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, qinka-cs-runtime (>= 0.1.1)")
+set(CPACK_DEBIAN_RUNETIME_PACKAGE_SECTION "runtime")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION_SUMMARY "Qinka Computing Subprograms.")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Qinka Computing Subprograms. [TODO]")
 include(CPack)
+
+# Gen changelog for debian
+configure_file (
+    "${PROJECT_SOURCE_DIR}/debian/changelog.in.in"
+    "${PROJECT_SOURCE_DIR}/debian/changelog.in"
+    )

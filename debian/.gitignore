@@ -1,0 +1,8 @@
+changelog
+changelog.in
+files
+libqinkacs*
+!libqinkacs-dev.install
+!libqinkacs-runtime.install
+tmp
+debhelper-build-stamp

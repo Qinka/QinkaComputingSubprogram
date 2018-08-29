@@ -1,0 +1,27 @@
+Source: libqinkacs
+Priority: optional
+Maintainer: Johann Lee <me@qinka.pro>
+Build-Depends:  debhelper (>= 10),
+                cmake,
+                gcc
+Standards-Version: 4.1.2
+Section: libs
+Homepage: https://github.com/Qinka/QinkaComputingSubprogram
+Vcs-Git: https://github.com/Qinka/QinkaComputingSubprogram.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/qinkacs.git
+
+Package: libqinkacs-dev
+Section: devel
+Architecture: any
+Depends:    libqinkacs-runtime (= ${binary:Version}),
+            ${misc:Depends}
+Description: Qinka Computing Subprogram devel
+    Qinka Computing Subprogram devel [TODO]
+
+Package: libqinkacs-runtime
+Section: lib
+Architecture: any
+Depends:    ${shlibs:Depends},
+            ${misc:Depends}
+Description: Qinka Computing Subprogram runtime
+    Qinka Computing Subprogram runtime [TODO]
