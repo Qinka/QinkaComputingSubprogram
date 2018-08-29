@@ -5,8 +5,8 @@
 
 override_dh_auto_clean:
 	dh_auto_clean
-	rm -rf build.d
-	rm -rf *.build.d
+	rm -rf build
+	rm -rf *.build
 
 override_dh_auto_configure:
 	dh_auto_configure -- "-DENABLE_O3=On -DENABLE_OPENMP=On"
