@@ -39,6 +39,8 @@ packages:
   - bindings/hQinkaCS
   - bindings/hQinkaCS-binding
   - .submodules/HaskellFAI/FAI
+  - .submodules/HaskellFAI/FAI-platform-host
+  - .submodules/HaskellFAI/FAI-platform-cuda
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 # extra-deps: []
@@ -46,8 +48,6 @@ packages:
 # Override default flag values for local packages and extra-deps
 flags:
   hQinkaCS:
-    enable-cuda: true
-  FAI:
     enable-cuda: true
 
 # Extra package databases containing global packages

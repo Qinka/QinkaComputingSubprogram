@@ -4,6 +4,7 @@ module Accelerate.QinkaCS.LoadImg.CUDA
 
 import           Accelerate.QinkaCS.LoadImg
 
+import           Accelerate.QinkaCS.Tensor
 import           Foreign.FAI
 import           Foreign.FAI.Platform.CUDA
 import           Foreign.FAI.Platform.Host

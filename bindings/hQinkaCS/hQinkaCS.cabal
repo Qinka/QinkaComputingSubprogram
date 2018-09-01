@@ -23,21 +23,23 @@ flag enable-cuda
       description:         Enable the Nvidia's CUDA platform.
 
 library
-  exposed-modules:     Accelerate.QinkaCS.ML.ActivationFunction
+  exposed-modules:     Accelerate.QinkaCS.QinkaComputingSubprogram
                      , Accelerate.QinkaCS.BLAS.BasicFunction
-                     , Accelerate.QinkaCS.QinkaComputingSubprogram
                      , Accelerate.QinkaCS.BLAS.HyperbolicFunction
                      , Accelerate.QinkaCS.BLAS.MatrixFunction
                      , Accelerate.QinkaCS.BLAS.TrigonometricFunction
-                     , Accelerate.QinkaCS.LoadImg
                      , Accelerate.QinkaCS.Buffer.Fill
                      , Accelerate.QinkaCS.CV.ComputerVision
-                     , Accelerate.QinkaCS.Wrapper
+                     , Accelerate.QinkaCS.ML.ActivationFunction
+                     , Accelerate.QinkaCS.LoadImg
+                     , Accelerate.QinkaCS.Tensor
   other-modules:       Accelerate.QinkaCS.TH
+                     , Accelerate.QinkaCS.Wrapper
   -- other-extensions:    
   build-depends:       base == 4.*
                      , template-haskell
                      , FAI
+                     , FAI-platform-host
                      , split
                      , JuicyPixels
                      , vector
@@ -46,5 +48,6 @@ library
   hs-source-dirs:      src
   default-language:    Haskell2010
   if (flag(enable-cuda))
+     build-depends:       FAI-platform-cuda
      exposed-modules:     Accelerate.QinkaCS.LoadImg.CUDA
      cpp-options:        -D__CUDA_ENABLE

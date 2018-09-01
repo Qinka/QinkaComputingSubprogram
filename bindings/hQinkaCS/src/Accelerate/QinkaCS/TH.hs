@@ -1,8 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Accelerate.QinkaCS.TH where
+module Accelerate.QinkaCS.TH
+  ( module Accelerate.QinkaCS.TH
+  , module Accelerate.QinkaCS.Tensor
+  )where
 
 import           Accelerate.QinkaCS.Binding.QinkaComputingSubprogram
+import           Accelerate.QinkaCS.Tensor
 import           Control.Monad
 import           Data.Char
 import           Data.List.Split
@@ -16,10 +20,10 @@ import           System.IO.Unsafe
 mkBestContext' :: (Name, Name) -> [Dec]
 mkBestContext' (typeName, nullContextName) =
   let bestIOName = mkName "bestContextIO"
-      bestIOSig  = SigD bestIOName $ AppT (ConT ''IO) $ AppT (ConT ''Context) (ConT typeName)
+      bestIOSig  = SigD bestIOName $ AppT (ConT ''IO) (ConT typeName)
       bestIOFun  = FunD bestIOName [Clause [] (NormalB $ VarE nullContextName) []]
       bestUnName = mkName "bestContext"
-      bestUnSig  = SigD bestUnName $ AppT (ConT ''Context) (ConT typeName)
+      bestUnSig  = SigD bestUnName  (ConT typeName)
       bestUnFun  = FunD bestUnName [Clause [] (NormalB $ AppE (VarE 'unsafePerformIO) (VarE bestIOName)) []]
   in  [bestIOSig, bestIOFun, bestUnSig, bestUnFun]
 
@@ -61,10 +65,10 @@ l2p = return . flip step 0
         step t i = (i, t)
 
 mkContextP :: Name -> Type -> Type
-mkContextP pn = AppT (AppT ArrowT (AppT (ConT ''Context) (VarT pn)))
+mkContextP pn = AppT (AppT ArrowT (VarT pn))
 
 mkFunSig :: Bool -> Int -> Int -> Name -> Name -> Type
-mkFunSig is p1 p2 shN pN = mk1p shN pN (p1 - 1) . mkAccT pN . mkBufferTSP realShape pN $ ConT ''Float
+mkFunSig is p1 p2 shN pN = mk1p shN pN (p1 - 1) . mkAccT pN $ mkTenTSP realShape pN
   where realShape = if is then VarT shN else ConT ''Int
 
 mkSel :: Bool -> [Bool] -> [Name] -> Exp
@@ -86,17 +90,17 @@ selShapeN is (t:ts) = step t ts `seq` return ()
         step t (t':ts) = if t == t' then step t ts else error "Not same shape"
 
 mkIOT :: Name -> Type -> Type
-mkIOT p t = AppT (ConT ''IO) $ AppT (AppT (ConT ''(,)) t) (AppT (ConT ''Context) (VarT p))
+mkIOT p t = AppT (ConT ''IO) $ AppT (AppT (ConT ''(,)) t) (VarT p)
 
 mkAccT :: Name -> Type -> Type
 mkAccT p = AppT (AppT (ConT ''Accelerate) (VarT p))
 
-mkBufferTSP :: Type -> Name -> Type -> Type
-mkBufferTSP sh p = AppT (AppT (AppT (ConT ''Buffer) sh) (VarT p))
+mkTenTSP :: Type -> Name -> Type
+mkTenTSP sh = AppT (AppT (ConT ''Ten) sh) . VarT
 
 mk1p :: Name -> Name -> Int -> Type ->Type
 mk1p _ _ 0 t = t
-mk1p s p i t = mk1p s p (i-1) (AppT (AppT ArrowT (mkBufferTSP (VarT s) p (ConT ''Float)) ) t)
+mk1p s p i t = mk1p s p (i-1) (AppT (AppT ArrowT (mkTenTSP (VarT s) p)) t)
 
 mk2p :: Int -> Type -> Type
 mk2p 0 t = t
@@ -109,13 +113,13 @@ mkWithSeq :: Name -> Exp -> [(Name, Name)] -> Exp
 mkWithSeq fn = foldl (\e (vn, pn) -> mkWith fn vn pn e)
 
 appFunc :: Exp -> Name -> [Name] -> Exp
-appFunc shn fn = flip AppE (AppE (VarE 'shLen) shn) . foldl (\e p -> AppE e (AppE (VarE 'castPtr) (VarE p))) (VarE fn)
+appFunc shn fn = flip AppE (AppE (VarE 'shLen) shn) . foldl (\e p -> AppE e (VarE p)) (VarE fn)
 
 mkReturn :: Name -> Name -> Exp
 mkReturn cpn bfn = AppE (VarE 'return) (TupE [VarE bfn, VarE cpn])
 
-mkNewBuffer :: Name -> Exp -> Exp
-mkNewBuffer pn = flip AppE (VarE pn) . AppE (VarE 'newBufferIO)
+mkNewTen :: Name -> Exp -> Exp
+mkNewTen pn = flip AppE (VarE pn) . AppE (VarE 'newBufferIO)
 
 mkBindingFAI :: Name -> Bool -> [Bool] -> Q [Dec]
 mkBindingFAI bindingName' sg is = do
@@ -141,12 +145,12 @@ mkBindingFAI bindingName' sg is = do
                             , AppT (ConT ''Storable) (VarT aName) ]
                             bindingType
       bindingSigD = SigD funcName bindingKind
-      bufSh = AppE (VarE 'bufShape) (VarE $ head bufNames)
+      bufSh = AppE (VarE 'getBufferShape) (VarE $ head bufNames)
       newSh = if sg then bufSh else LitE $ IntegerL 1
       bindingBody = NormalB $ AppE (ConE 'Accelerate) $ LamE [VarP pconName] $ DoE
                     [ NoBindS (mkSel sg is bufNames)
-                    , BindS (TupP [VarP outBufName, VarP pncnName]) (mkNewBuffer pconName newSh)
-                    , NoBindS (mkWithSeq (mkName "withBuffer") (appFunc bufSh bindingName allPtrName) (zip allBufName allPtrName))
+                    , BindS (TupP [VarP outBufName, VarP pncnName]) (mkNewTen pconName newSh)
+                    , NoBindS (mkWithSeq (mkName "withBuffer'") (appFunc bufSh bindingName allPtrName) (zip allBufName allPtrName))
                     , NoBindS (mkReturn pncnName outBufName)
                     ]
       bindingPat  = map VarP bufNames

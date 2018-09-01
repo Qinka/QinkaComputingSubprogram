@@ -26,6 +26,7 @@ import           Accelerate.QinkaCS.CV.ComputerVision          as X
 import           Accelerate.QinkaCS.LoadImg                    as X
 import           Accelerate.QinkaCS.ML.ActivationFunction      as X
 import           Accelerate.QinkaCS.QinkaComputingSubprogram   as X
+import           Accelerate.QinkaCS.Tensor                     as X
 
 import           Control.Monad                                 as X
 import           Control.Monad.Catch                           as X
@@ -45,6 +46,6 @@ import           Accelerate.QinkaCS.TH                         (mkBestContext)
 mkBestContext
 
 
-class (LoadSaveImg p, FAI p, Storable (Pf p Float)) => Wrappered p
+class    (LoadSaveImg p, FAI p, Storable (Pf p Float)) => Wrappered p
 
 instance (LoadSaveImg p, FAI p, Storable (Pf p Float)) => Wrappered p

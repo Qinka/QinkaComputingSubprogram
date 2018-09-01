@@ -41,7 +41,7 @@ void backward_HW_mul2D_A(float *dA, float *dC, float *B, int m, int n, int s);
  * 
  * @param dB matrix $\frac{\partial L}{\partial B}_{(n \times s)}$
  * @param A  matrix $A_{m \times n}$
- * @param dC matrix $\frac{\partial L}{\partial C}_{(s \times n)}$
+ * @param dC matrix $\frac{\partial L}{\partial C}_{(m \times n)}$
  * @param m size
  * @param n size
  * @param s size
