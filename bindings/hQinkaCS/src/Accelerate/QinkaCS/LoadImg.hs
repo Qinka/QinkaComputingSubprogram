@@ -12,12 +12,13 @@ module Accelerate.QinkaCS.LoadImg
   , LoadSaveImg(..)
   ) where
 
+import           Accelerate.QinkaCS.Exception
 import           Accelerate.QinkaCS.Tensor
 import           Codec.Picture
 import           Control.Monad.Logger
-import qualified Data.Text                 as T
-import           Data.Vector.Storable      (Vector, fromList, toList,
-                                            unsafeToForeignPtr0)
+import qualified Data.Text                    as T
+import           Data.Vector.Storable         (Vector, fromList, toList,
+                                               unsafeToForeignPtr0)
 import           Foreign.FAI
 import           Foreign.FAI.Platform.Host
 import           Foreign.ForeignPtr
@@ -33,8 +34,8 @@ loadImageToBufferFloat :: (LoadSaveImg p, Storable c, c ~ Pf p Float, ContextLog
                        -> Accelerate p (Ten DIM3 p, ImgFormat)
 loadImageToBufferFloat is fp = do
   (b, f) <- readImageToBufferFloat is fp
-  $(logInfo) $ mconcat ["load image from ", T.pack fp]
-  $(logInfo) $ mconcat ["image in format of ", T.pack (show f), " with shape", T.pack (show $ getBufferShape b)]
+  $logInfo $ mconcat ["load image from ", T.pack fp]
+  $logInfo $ mconcat ["image in format of ", T.pack (show f), " with shape", T.pack (show $ getBufferShape b)]
   return (b, f)
 
 saveImageFromBufferFloat :: (LoadSaveImg p, Storable c, c ~ Pf p Float, ContextLogger p)
@@ -44,8 +45,8 @@ saveImageFromBufferFloat :: (LoadSaveImg p, Storable c, c ~ Pf p Float, ContextL
                          -> Ten DIM3 p
                          -> Accelerate p ()
 saveImageFromBufferFloat is fp f b = do
-  $(logInfo) $ mconcat ["save image to ", T.pack fp]
-  $(logInfo) $ mconcat ["image in format of ", T.pack (show f), " with shape", T.pack (show $ getBufferShape b)]
+  $logInfo $ mconcat ["save image to ", T.pack fp]
+  $logInfo $ mconcat ["image in format of ", T.pack (show f), " with shape", T.pack (show $ getBufferShape b)]
   writeImageFromBufferFloat is fp f b
 
 class FAI p => LoadSaveImg p where
@@ -89,7 +90,7 @@ readImageToBufferFloatHost is fp = Accelerate $ \cc -> do
         fromDynImg (ImageRGBA8 (Image w h d)) = return (trans fI d, h, w, 4, RGBA8)
         fromDynImg (ImageYF    (Image w h d)) = return (trans id d, h, w, 1, YF)
         fromDynImg (ImageRGBF  (Image w h d)) = return (trans id d, h, w, 3, RGBF)
-        fromDynImg _ = error "Not support!"
+        fromDynImg f = throw $ UnsupportedImageFormat "??"
 
 writeImageFromBufferFloatHost :: FAI p
                               => Bool  -- ^ whether transform  to integer from (0, 1) :: [Float]
@@ -113,5 +114,5 @@ writeImageFromBufferFloatHost is fp f (Ten p sh) = Accelerate $ \cc -> do
         toDynImg RGBA8 fp (Z :. h :. w :. c) = ImageRGBA8 . Image w h <$> trans rI fp (h * w * c)
         toDynImg YF    fp (Z :. h :. w :. c) = ImageYF    . Image w h <$> trans id fp (h * w * c)
         toDynImg RGBF  fp (Z :. h :. w :. c) = ImageRGBF  . Image w h <$> trans id fp (h * w * c)
-        toDynImg _ _ _ = error "Not support!"
+        toDynImg f _ _ = throw $ UnsupportedImageFormat $ show f
 

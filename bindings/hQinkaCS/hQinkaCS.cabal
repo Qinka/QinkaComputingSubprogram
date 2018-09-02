@@ -31,10 +31,11 @@ library
                      , Accelerate.QinkaCS.Buffer.Fill
                      , Accelerate.QinkaCS.CV.ComputerVision
                      , Accelerate.QinkaCS.ML.ActivationFunction
+                     , Accelerate.QinkaCS.Exception
                      , Accelerate.QinkaCS.LoadImg
                      , Accelerate.QinkaCS.Tensor
-  other-modules:       Accelerate.QinkaCS.TH
                      , Accelerate.QinkaCS.Wrapper
+  other-modules:       Accelerate.QinkaCS.TH
   -- other-extensions:    
   build-depends:       base == 4.*
                      , template-haskell

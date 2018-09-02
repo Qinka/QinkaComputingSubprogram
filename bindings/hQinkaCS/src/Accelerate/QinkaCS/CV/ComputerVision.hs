@@ -4,6 +4,7 @@
 module Accelerate.QinkaCS.CV.ComputerVision where
 
 import           Accelerate.QinkaCS.Binding.ComputerVision
+import           Accelerate.QinkaCS.Exception
 import           Accelerate.QinkaCS.Tensor
 import           Control.Monad
 import           Foreign.FAI
@@ -15,7 +16,7 @@ cvColorBackgroundMask :: (FAI p,  Shape sh, Storable c, c ~ Pf p Float)
                       -> Ten (sh :. Int) p -- ^ image
                       -> Accelerate p (Ten (sh :. Int) p)
 cvColorBackgroundMask color image = do
-  when (colorSh' /= colorSh) $ error $ "not same shape " ++ show colorSh ++ " " ++ show colorSh'
+  when (colorSh' /= colorSh) $ throw $ UnmatchShape colorSh colorSh'
   maskBuf <- newBuffer $ getBufferShape image
   liftIO $ withBuffer color $ \pColor ->
     withBuffer image $ \pImage ->
@@ -34,7 +35,7 @@ cvColorBackgroundMaskRGBRang :: ( FAI p, Shape sh
                              -> (Float, Float, Float)
                              -> Accelerate p (Ten (sh :. Int) p)
 cvColorBackgroundMaskRGBRang image (aR, aG, aB) (bR, bG, bB) = do
-  when (shLen colorSh /= 3) $ error "Color, not RGB"
+  when (shLen colorSh /= 3) $ throw $ RGBNeeded colorSh
   maskBuf <- newBuffer $ getBufferShape image
   liftIO $ withBuffer' image $ \pImage ->
     withBuffer' maskBuf $ \pMask ->
@@ -46,7 +47,7 @@ cvColorRGB2HSV :: (FAI p,  Shape sh, Storable c, c ~ Pf p Float)
                => Ten (sh :. Int) p -- ^ image
                -> Accelerate p (Ten (sh :. Int) p)
 cvColorRGB2HSV image = do
-  when (colorSh /= 3) $ error $ "not same shape " ++ show colorSh
+  when (colorSh /= 3) $ throw $ RGBNeeded colorSh
   hsvBuf <- newBuffer $ getBufferShape image
   liftIO $ withBuffer' image $ \pImage ->
     withBuffer' hsvBuf $ \pHSV ->
@@ -59,7 +60,7 @@ cvColorHSV2RGB :: (FAI p,  Shape sh, Storable c, c ~ Pf p Float)
                => Ten (sh :. Int) p -- ^ image
                -> Accelerate p (Ten (sh :. Int) p)
 cvColorHSV2RGB image = do
-  when (colorSh /= 3) $ error $ "not same shape " ++ show colorSh
+  when (colorSh /= 3) $ throw $ HSVNeeded colorSh
   rgbBuf <- newBuffer $ getBufferShape image
   liftIO $ withBuffer' image $ \pImage ->
     withBuffer' rgbBuf $ \pRGB ->

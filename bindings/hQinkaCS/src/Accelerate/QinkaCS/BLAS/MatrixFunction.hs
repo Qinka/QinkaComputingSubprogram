@@ -3,6 +3,7 @@
 module Accelerate.QinkaCS.BLAS.MatrixFunction where
 
 import           Accelerate.QinkaCS.Binding.MatrixFunction
+import           Accelerate.QinkaCS.Exception
 import           Accelerate.QinkaCS.Tensor
 import           Control.Monad
 import           Foreign.FAI
@@ -16,7 +17,7 @@ hwForwardMul :: (FAI p, Storable c, c ~ Pf p Float)
 hwForwardMul b1 b2 = Accelerate $ \cc -> do
   let Z :. m  :. n = getBufferShape b1
       Z :. n' :. s = getBufferShape b2
-  when (n /= n') $ error "shape error"
+  when (n /= n') $ throw $ UnmatchShape (Z :. n' :. s) (Z :. n :. s)
   (outB, cc') <- newBufferIO (Z :. m :. s) cc
   withBuffer' b1 $ \p1 -> withBuffer' b2 $ \p2 -> withBuffer' outB $ \po ->
     forward_HW_mul2D po p1 p2 m n s
@@ -30,7 +31,7 @@ hwBackwardMulA :: (FAI p, Storable c, c ~ Pf p Float)
 hwBackwardMulA b1 b2 = Accelerate $ \cc -> do
   let Z :. m :. s  = getBufferShape b1
       Z :. n :. s' = getBufferShape b2
-  when (s /= s') $ error "shape error"
+  when (s /= s') $ throw $ UnmatchShape (Z :. n :. s) (Z :. n :. s')
   (outB, cc') <- newBufferIO (Z :. m :. s) cc
   withBuffer' b1 $ \p1 -> withBuffer' b2 $ \p2 -> withBuffer' outB $ \po ->
     backward_HW_mul2D_A po p1 p2 m n s
@@ -43,7 +44,7 @@ hwBackwardMulB :: (FAI p, Storable c, c ~ Pf p Float)
 hwBackwardMulB b1 b2 = Accelerate $ \cc -> do
   let Z :. m  :. n = getBufferShape b1
       Z :. m' :. s = getBufferShape b2
-  when (m /= m') $ error "shape error"
+  when (m /= m') $ throw $ UnmatchShape (Z :. m' :. s) (Z :. m :. s)
   (outB, cc') <- newBufferIO (Z :. m :. s) cc
   withBuffer' b1 $ \p1 -> withBuffer' b2 $ \p2 -> withBuffer' outB $ \po ->
     backward_HW_mul2D_B po p1 p2 m n s

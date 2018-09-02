@@ -6,12 +6,11 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Accelerate.QinkaCS.Wrapper
-    ( bestContextIO
-    , bestContext
-    , Wrappered(..)
-    , module X
-
-    ) where
+  ( bestContextIO
+  , bestContext
+  , Wrappered(..)
+  , module X
+  ) where
 
 import           Foreign.FAI                                   as X
 import           Foreign.FAI.Platform.Host                     as X
@@ -32,6 +31,7 @@ import           Control.Monad                                 as X
 import           Control.Monad.Catch                           as X
 import           Control.Monad.Logger                          as X
 import           Foreign.Storable                              as X
+import           GHC.Stack                                     as X
 import           System.Environment                            as X
 
 
@@ -46,6 +46,6 @@ import           Accelerate.QinkaCS.TH                         (mkBestContext)
 mkBestContext
 
 
-class    (LoadSaveImg p, FAI p, Storable (Pf p Float)) => Wrappered p
+class    (LoadSaveImg p, FAI p, ContextLogger p, Storable (Pf p Float)) => Wrappered p
 
-instance (LoadSaveImg p, FAI p, Storable (Pf p Float)) => Wrappered p
+instance (LoadSaveImg p, FAI p, ContextLogger p, Storable (Pf p Float)) => Wrappered p

@@ -1,13 +1,16 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TemplateHaskell  #-}
 
 module Accelerate.QinkaCS.TH
   ( module Accelerate.QinkaCS.TH
   , module Accelerate.QinkaCS.Tensor
-  )where
+  ) where
 
 import           Accelerate.QinkaCS.Binding.QinkaComputingSubprogram
+import           Accelerate.QinkaCS.Exception
 import           Accelerate.QinkaCS.Tensor
 import           Control.Monad
+import           Control.Monad.IO.Class
 import           Data.Char
 import           Data.List.Split
 import           Foreign.FAI
@@ -84,10 +87,10 @@ mkSel sg is bs =
 mkBufLen :: Name -> Exp
 mkBufLen = AppE (VarE 'bufSize) . VarE
 
-selShapeN :: Monad m => Bool -> [Int] -> m ()
-selShapeN is (t:ts) = step t ts `seq` return ()
-  where step t []      = True
-        step t (t':ts) = if t == t' then step t ts else error "Not same shape"
+selShapeN :: (MonadThrow m, HasCallStack, MonadIO m) => Bool -> [Int] -> m ()
+selShapeN is (t:ts) = step t ts
+  where step t []      = return ()
+        step t (t':ts) = if t == t' then step t ts else throw (UnmatchSize t' t)
 
 mkIOT :: Name -> Type -> Type
 mkIOT p t = AppT (ConT ''IO) $ AppT (AppT (ConT ''(,)) t) (VarT p)

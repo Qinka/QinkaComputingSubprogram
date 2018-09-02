@@ -3,7 +3,6 @@ module Accelerate.QinkaCS.LoadImg.CUDA
   ) where
 
 import           Accelerate.QinkaCS.LoadImg
-
 import           Accelerate.QinkaCS.Tensor
 import           Foreign.FAI
 import           Foreign.FAI.Platform.CUDA
